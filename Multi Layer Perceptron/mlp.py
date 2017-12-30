@@ -204,22 +204,24 @@ class LinearLayer(object):
         # print(delta_next)
         # print(self.W)
 
-        # val = delta_next*self.W
+        # print(delta_next)
+        # print(self.W)
         # val = np.dot(delta_next.T,self.W)
+        val = np.dot(delta_next,self.W.T)
 
-        # return val
+        return val
 
-        input_sample_count = len(delta_next)
-        res = np.zeros((input_sample_count, self.n_inputs))
+        # input_sample_count = len(delta_next)
+        # res = np.zeros((input_sample_count, self.n_inputs))
 
-        for s in range(input_sample_count):
-            ndeltas = delta_next[s]
-            for i in range(self.n_inputs):
-                res[s][i] = 0
-                for u in range(self.n_units):
-                    res[s][i] += ndeltas[u] * self.W[i][u]
+        # for s in range(input_sample_count):
+        #     ndeltas = delta_next[s]
+        #     for i in range(self.n_inputs):
+        #         res[s][i] = 0
+        #         for u in range(self.n_units):
+        #             res[s][i] += ndeltas[u] * self.W[i][u]
 
-        return res
+        # return res
         
         pass  # TODO IMPLEMENT
 
@@ -231,42 +233,30 @@ class LinearLayer(object):
         :return: a list of two arrays [dW, db] corresponding to gradients of loss w.r.t. weights and biases, the shapes
         of dW and db are the same as the shapes of the actual parameters (self.W, self.b)
         """
-        gW = np.zeros((self.n_inputs, self.n_units))
-        gB = np.ones(self.n_units)
 
-        input_sample_count = len(X)
+        # gW = np.zeros((self.n_inputs, self.n_units))
+        # gB = np.ones(self.n_units)
 
-        # print("HHHHHHHHHHHH")
-        # print(self.b)
-        # print(delta_next)
-        # print(self.b.shape)
-        # print(delta_next.shape)
+        # input_sample_count = len(X)
+        # for i in range(self.n_inputs):
+        #     for u in range(self.n_units):
+        #         gW[i][u] = 0
+        #         gSW = np.zeros(input_sample_count)
+        #         gSB = np.zeros(input_sample_count)
+        #         for s in range(input_sample_count):
+        #             gSW[s] += delta_next[s][u] * X[s][i]
+        #             gSB[s] += delta_next[s][u] * self.b[u]
 
-        # print(delta_next)
-        # print(X)
-        # print("self.W")
-        # print(self.W)
+        #         gW[i][u] = np.mean(gSW)
+        #         gB[u] = np.mean(gSB)
+
+        # return gW, gB
+
         dW = np.dot(X.T,delta_next)
-        # for i in range(len(dW)):
-        #     dW[i] = np.mean(dW[i])
-        # dW = X*delta_next
-        # print("dW")
-        # print(dW)
-        print("\n")
-        # print(self.b.shape)
-        # print(delta_next)
-        # print(self.b)
-        # db = np.dot(self.b,delta_next)
-        # should be okay the pb must be in SoftmaxLayer
-        # db = np.dot(delta_next,self.b)
+     
+
         db = self.b
 
-        # print("LOL")
-        # print(self.b)
-        # print(delta_next)
-        # print(self.b.shape)
-
-        # print(db.shape)
         return [dW,db]
 
         pass  # TODO IMPLEMENT
@@ -319,6 +309,27 @@ class ReLULayer(object):
     def delta(self, Y, delta_next):
         print("RELU backprop")
 
+        # roll_coll = np.shape(Y)
+        # input_sample_count = roll_coll[0]
+        # unit_count = roll_coll[1]
+
+        # res = np.zeros((input_sample_count, unit_count))
+        # print("JAJJAJAJAJ")
+        # for s in range(input_sample_count):
+        #     sample_delta = delta_next[s]
+
+        #     t = 0
+        #     for i in range(unit_count):
+        #         d = 0
+        #         if Y[s][i] > 0:
+        #             d = 1
+        #         t += sample_delta[i] * d
+
+        #     for i in range(unit_count):
+        #         res[s][i] = t
+
+        # print(res)
+        # return res
 
         # print(Y)
         derivative_v = np.vectorize(derivativeRelu)
@@ -326,11 +337,8 @@ class ReLULayer(object):
         for i in range(len(Y)):
             Y[i] = derivative_v(Y[i])
 
-        #for y in Y:
-        #    y = derivative_v(y)
-        # print(Y)
-
-        return delta_next*Y
+        res = np.dot(delta_next.T,Y)
+        return res
 
         pass  # TODO IMPLEMENT
 
@@ -350,14 +358,6 @@ class SoftmaxLayer(object):
             X[i] = np.exp(X[i]) / np.sum(np.exp(X[i]), axis=0)
         print("\n")
         return X
-
-        # print(X)
-        # e = np.exp(X)
-        # print(e)
-        # e = e/np.sum(e)
-        # print(e)
-        # print("\n")
-        # return (e/np.sum(e))
 
         pass  # TODO IMPLEMENT
 
@@ -448,6 +448,15 @@ class LossCrossEntropy(object):
         :param T: one-hot encoded targets, shape (n_samples, n_inputs)
         :return: delta vector from the loss layer, shape (n_samples, n_inputs)
         """
+
+        # roll_coll = np.shape(X)
+        # input_sample_count = roll_coll[0]
+        # res = np.zeros((roll_coll[0], roll_coll[1]))
+
+        # for s in range(input_sample_count):
+        #     res[s] = - T[s] / X[s]
+
+        # return res
 
         delta = - (np.divide(T,X) - np.divide((1-T),(1-X))) 
         # delta = -(T/X -(1-T)/(1-X))
@@ -586,6 +595,7 @@ class MLP(object):
 
         for i in range(layer_count - 1, -1, -1):
             layer = self.layers[i]
+            print(layer.name)
 
             if layer.has_params():
                 if i == 0:
