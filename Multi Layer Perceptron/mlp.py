@@ -322,8 +322,12 @@ class ReLULayer(object):
 
         # print(Y)
         derivative_v = np.vectorize(derivativeRelu)
-        for y in Y:
-            y = derivative_v(y)
+
+        for i in range(len(Y)):
+            Y[i] = derivative_v(Y[i])
+
+        #for y in Y:
+        #    y = derivative_v(y)
         # print(Y)
 
         return delta_next*Y
