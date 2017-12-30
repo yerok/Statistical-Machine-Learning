@@ -254,14 +254,18 @@ class LinearLayer(object):
 
         dW = np.dot(X.T,delta_next)
      
-        print(self.b)
-        print(delta_next)
+        # print(self.b)
+        # print(delta_next)
         # db = np.dot(self.b.T,delta_next)
 
          # the gradient for the biases is simply the back-propagated error 
          # from the output units. Doesn't seem correct though.
         # db = delta_next
         db = self.b
+        # print(self.b.shape)
+        # db = np.dot(delta_next,self.b)
+        # print(db.shape)
+
 
         return [dW,db]
 
@@ -284,6 +288,8 @@ class LinearLayer(object):
         """
         assert len(dtheta) == 2, len(dtheta)
         dW, db = dtheta
+        print(db.shape)
+        print(self.b.shape)
         assert dW.shape == self.W.shape, dW.shape
         assert db.shape == self.b.shape, db.shape
         self.W += dW
@@ -343,7 +349,7 @@ class ReLULayer(object):
         for i in range(len(Y)):
             Y[i] = derivative_v(Y[i])
 
-        res = np.dot(delta_next.T,Y)
+        res = np.dot(delta_next,Y)
         return res
 
         pass  # TODO IMPLEMENT
@@ -390,34 +396,34 @@ class SoftmaxLayer(object):
 
 
 
-        return delta_next*output
+        # return delta_next*output
         for i in range(len(Y)):
             SM = Y[i].reshape((-1,1))
             Y[i] = np.dot((np.diag(Y[i]) - np.dot(SM, SM.T)),delta_next[i])
 
         return Y 
 
-        roll_coll = np.shape(Y)
-        input_sample_count = roll_coll[0]
-        unit_count = roll_coll[1]
+        # roll_coll = np.shape(Y)
+        # input_sample_count = roll_coll[0]
+        # unit_count = roll_coll[1]
 
-        res = np.zeros((input_sample_count, unit_count))
+        # res = np.zeros((input_sample_count, unit_count))
 
-        for s in range(input_sample_count):
-            ndeltas = delta_next[s]
-            for i in range(unit_count):
-                res[s][i] = 0
-                for u in range(unit_count):
+        # for s in range(input_sample_count):
+        #     ndeltas = delta_next[s]
+        #     for i in range(unit_count):
+        #         res[s][i] = 0
+        #         for u in range(unit_count):
 
-                    d = 0
-                    if i != u:
-                        d = -1 * Y[s][i] * Y[s][u]
-                    else:
-                        d = Y[s][i] * (1 - Y[s][i])
+        #             d = 0
+        #             if i != u:
+        #                 d = -1 * Y[s][i] * Y[s][u]
+        #             else:
+        #                 d = Y[s][i] * (1 - Y[s][i])
 
-                    res[s][i] += ndeltas[u] * d
+        #             res[s][i] += ndeltas[u] * d
 
-        return res
+        # return res
 
         pass  # TODO IMPLEMENT
 
