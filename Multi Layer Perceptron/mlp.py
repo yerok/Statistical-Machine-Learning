@@ -390,12 +390,12 @@ class SoftmaxLayer(object):
 
 
 
-        # return delta_next*output
-        # for i in range(len(Y)):
-        #     SM = Y[i].reshape((-1,1))
-        #     Y[i] = np.dot((np.diag(Y[i]) - np.dot(SM, SM.T)),delta_next[i])
+        return delta_next*output
+        for i in range(len(Y)):
+            SM = Y[i].reshape((-1,1))
+            Y[i] = np.dot((np.diag(Y[i]) - np.dot(SM, SM.T)),delta_next[i])
 
-        # return Y 
+        return Y 
 
         roll_coll = np.shape(Y)
         input_sample_count = roll_coll[0]
