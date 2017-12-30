@@ -254,7 +254,13 @@ class LinearLayer(object):
 
         dW = np.dot(X.T,delta_next)
      
+        print(self.b)
+        print(delta_next)
+        # db = np.dot(self.b.T,delta_next)
 
+         # the gradient for the biases is simply the back-propagated error 
+         # from the output units. Doesn't seem correct though.
+        # db = delta_next
         db = self.b
 
         return [dW,db]
@@ -385,6 +391,11 @@ class SoftmaxLayer(object):
 
 
         # return delta_next*output
+        # for i in range(len(Y)):
+        #     SM = Y[i].reshape((-1,1))
+        #     Y[i] = np.dot((np.diag(Y[i]) - np.dot(SM, SM.T)),delta_next[i])
+
+        # return Y 
 
         roll_coll = np.shape(Y)
         input_sample_count = roll_coll[0]
